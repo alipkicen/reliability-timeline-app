@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+import plotly.express as px
 
 # Define the durations for each process and sub-process
 durations = {
@@ -42,62 +43,27 @@ durations = {
     "Mechanical Shock": [
         ("Pretest", 3),
         ("VI", 1),
-        ("Precon", 7),
-        ("250cyc Readpoint", 3),
-        ("500cyc", 7),
-        ("500cyc Readpoint", 3),
-        ("750cyc", 7),
-        ("750cyc Readpoint", 3),
-        ("1000cyc", 7),
-        ("1000cyc Readpoint", 3),
+        ("Precon", 10),
+        ("Shock", 6),
         ("VI", 1),
-        ("1250cyc", 7),
-        ("1250cyc Readpoint", 3),
+        ("Post Test", 3),
     ],
     "Bend": [
         ("Pretest", 3),
-        ("VI", 1),
-        ("250cyc", 7),
-        ("250cyc Readpoint", 3),
-        ("500cyc", 7),
-        ("500cyc Readpoint", 3),
-        ("750cyc", 7),
-        ("750cyc Readpoint", 3),
-        ("1000cyc", 7),
-        ("1000cyc Readpoint", 3),
-        ("VI", 1),
-        ("1250cyc", 7),
-        ("1250cyc Readpoint", 3),
+        ("Precon", 10),
+        ("Bend", 6),
+        ("Post Test", 3),
     ],
     "Torsion": [
         ("Pretest", 3),
-        ("VI", 1),
-        ("250cyc", 7),
-        ("250cyc Readpoint", 3),
-        ("500cyc", 7),
-        ("500cyc Readpoint", 3),
-        ("750cyc", 7),
-        ("750cyc Readpoint", 3),
-        ("1000cyc", 7),
-        ("1000cyc Readpoint", 3),
-        ("VI", 1),
-        ("1250cyc", 7),
-        ("1250cyc Readpoint", 3),
+        ("Precon", 10),
+        ("Bend", 6),
+        ("Post Test", 3),
     ],
     "Vibration Temp Cycle": [
         ("Pretest", 3),
-        ("VI", 1),
-        ("250cyc", 7),
-        ("250cyc Readpoint", 3),
-        ("500cyc", 7),
-        ("500cyc Readpoint", 3),
-        ("750cyc", 7),
-        ("750cyc Readpoint", 3),
-        ("1000cyc", 7),
-        ("1000cyc Readpoint", 3),
-        ("VI", 1),
-        ("1250cyc", 7),
-        ("1250cyc Readpoint", 3),
+        ("VTC", 7),
+        ("Post Test", 3),
     ]
 }
 
@@ -136,8 +102,9 @@ if st.button("Generate Timeline"):
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Display the timeline
-        st.write(f"### Timeline for QAWR Number: {qawr_number}")
-        st.table(df_timeline)
+        # Display the timeline as a Gantt chart
+        fig = px.timeline(df_timeline, x_start="Start Date", x_end="End Date", y="Process", color="Sub-Process", title=f"Timeline for QAWR Number: {qawr_number}")
+        fig.update_yaxes(categoryorder="total ascending")
+        st.plotly_chart(fig)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
