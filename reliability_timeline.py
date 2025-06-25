@@ -129,25 +129,29 @@ if st.button("Generate Timeline"):
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Create Gantt chart
+        # Add Day Count columns
+        df_timeline["Start Day"] = (df_timeline["Start Date"] - pd.to_datetime(start_date)).dt.days + 1
+        df_timeline["End Day"] = (df_timeline["End Date"] - pd.to_datetime(start_date)).dt.days + 1
+
+        # Create Gantt chart using day counts
         fig = px.timeline(
             df_timeline,
-            x_start="Start Date",
-            x_end="End Date",
+            x_start="Start Day",
+            x_end="End Day",
             y="Process",
             color="Color",
             text="Sub-Process",
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
 
-        # Add week and day labels to x-axis
+        # Update x-axis to show Day 1, Day 2, ...
         fig.update_xaxes(
-            tickformat="%d-%b",
-            ticklabelmode="period",
-            dtick="D1",
-            tick0=start_date
+            tickmode="linear",
+            tick0=1,
+            dtick=1,
+            title_text="Day Count"
         )
-        
+
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
