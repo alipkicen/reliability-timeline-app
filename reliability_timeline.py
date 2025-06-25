@@ -139,6 +139,21 @@ if st.button("Generate Timeline"):
             text="Sub-Process",
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
+
+        # Add week and day labels to x-axis
+        fig.update_xaxes(
+            tickformat="%d-%b",
+            ticklabelmode="period",
+            dtick="D1",
+            tick0=start_date
+        )
+        fig.update_xaxes(
+            tickformatstops=[
+                dict(dtickrange=[None, 1000], value="%d-%b"),
+                dict(dtickrange=[1000, None], value="Week %U")
+            ]
+        )
+        
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
