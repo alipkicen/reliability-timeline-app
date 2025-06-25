@@ -85,9 +85,9 @@ custom_colors = {
     "HAST 96hrs": "peachpuff",
     "HAST 264hrs": "peachpuff",
     "VTC": "peachpuff",
-    "CM": "peachpuff",
-    "Custom/K9 Approval": "peachpuff",
-    "Shipment": "peachpuff"
+    "CM": "lightpurple",
+    "Custom/K9 Approval": "lightgreen",
+    "Shipment": "blue"
 }
 
 # Streamlit app
@@ -122,7 +122,7 @@ if st.button("Generate Timeline"):
                     "End Date": end_date,
                     "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
                 })
-                process_start_date = end_date + timedelta(days=1)  # 1-day gap between sub-processes
+                process_start_date = end_date  # No gap between sub-processes
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
