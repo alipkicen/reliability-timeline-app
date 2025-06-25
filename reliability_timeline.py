@@ -86,7 +86,7 @@ custom_colors = {
     "HAST 264hrs": "peachpuff",
     "VTC": "peachpuff",
     "CM": "lightpurple",
-    "Custom/K9 Approval": "lightgreen",
+    "Custom/K9 Approval": "purple",
     "Shipment": "blue"
 }
 
