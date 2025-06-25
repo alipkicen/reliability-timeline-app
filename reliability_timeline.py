@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 
+st.set_page_config(layout="wide")
+
 # Define the durations for each process and sub-process
 durations = {
     "Temp Cycle J/K": [
