@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
 import plotly.express as px
+from datetime import datetime, timedelta
 
 # Define the durations for each process and sub-process
 durations = {
@@ -86,25 +86,38 @@ start_date = st.date_input("Select Start Date")
 if st.button("Generate Timeline"):
     if qawr_number and selected_processes and start_date:
         timeline = []
+        current_date = start_date
+
         for process in selected_processes:
-            current_date = start_date
+            process_start_date = current_date
             for sub_process, days in durations[process]:
-                end_date = current_date + timedelta(days=days)
+                end_date = process_start_date + timedelta(days=days)
                 timeline.append({
                     "Process": process,
                     "Sub-Process": sub_process,
-                    "Start Date": current_date,
+                    "Start Date": process_start_date,
                     "End Date": end_date
                 })
-                current_date = end_date  # No extra day gap between sub-processes
+                process_start_date = end_date  # No gap between sub-processes
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Display the timeline as a Gantt chart
-        fig = px.timeline(df_timeline, x_start="Start Date", x_end="End Date", y="Process", color="Sub-Process", title=f"Reliability Test Timeline for QAWR Number: {qawr_number}")
+        # Create Gantt chart
+        fig = px.timeline(
+            df_timeline,
+            x_start="Start Date",
+            x_end="End Date",
+            y="Process",
+            color="Sub-Process",
+            text="Sub-Process",
+            title=f"Timeline for QAWR Number: {qawr_number}"
+        )
         fig.update_yaxes(categoryorder="total ascending")
-        st.plotly_chart(fig)
+        fig.update_traces(textposition='inside', insidetextanchor='middle')
+
+        # Display the Gantt chart
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
 
