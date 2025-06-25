@@ -123,28 +123,30 @@ if st.button("Generate Timeline"):
                        "Sub-Process": sub_process,
                         "Start Date": process_start_date,
                         "End Date": end_date,
-                        "Color": custom_colors.get(sub_process, "peachpuff") # Default color if not specified
+                        "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
                          })
-                         process_start_date = end_date + timedelta(days=1) # 1-day gap between sub-processes
-
-     # Convert timeline to DataFrame
-     df_timeline = pd.DataFrame(timeline)
-
-     # Create Gantt chart
-     fig = px.timeline(
-         df_timeline,
-         x_start="Start Date",
-         x_end="End Date",
-         y="Process",
-      color="Color",
-      text="Sub-Process",
-      title=f"Timeline for QAWR Number: {qawr_number}"
-     )
-     fig.update_yaxes(categoryorder="total ascending")
-     fig.update_traces(textposition='inside', insidetextanchor='middle')
-     fig.update_layout(showlegend=False)
-
-     # Display the Gantt chart
-     st.plotly_chart(fig, use_container_width=True)
-    else:
-st     .error("Please enter QAWR number, select processes, and choose a start date.")
+                
+                process_start_date = end_date + timedelta(days=1)  # 1-day gap between sub-processes
+                
+                # Convert timeline to DataFrame
+                df_timeline = pd.DataFrame(timeline)
+                
+                # Create Gantt chart
+                fig = px.timeline(
+                   df_timeline,
+                   x_start="Start Date",
+                   x_end="End Date",
+                   y="Process",
+                   color="Color",
+                   text="Sub-Process",
+                   title=f"Timeline for QAWR Number: {qawr_number}"
+                   )
+                
+                fig.update_yaxes(categoryorder="total ascending")
+                fig.update_traces(textposition='inside', insidetextanchor='middle')
+                fig.update_layout(showlegend=False)
+                
+                # Display the Gantt chart
+                st.plotly_chart(fig, use_container_width=True)
+                else:
+                st.error("Please enter QAWR number, select processes, and choose a start date.")
