@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")  # Ensures wide layout
 
 # Define the durations for each process and sub-process
 durations = {
@@ -115,29 +115,21 @@ if st.button("Generate Timeline"):
 
         for process in selected_processes:
             process_start_date = current_date
+            total_days = 0
             for sub_process, days in durations[process]:
                 end_date = process_start_date + timedelta(days=days)
                 timeline.append({
-                    "Process": process,
+                    "Process": f"{process} ({total_days + days} days)",
                     "Sub-Process": sub_process,
                     "Start Date": process_start_date,
                     "End Date": end_date,
                     "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
                 })
-                process_start_date = end_date  # No gap between sub-processes
+                process_start_date = end_date + timedelta(days=1)  # No gap between sub-processes
+                total_days += days
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
-
-        # Calculate the total number of days for each process
-        process_durations = df_timeline.groupby("Process").apply(
-            lambda x: (x["End Date"].max() - x["Start Date"].min()).days + 1
-        ).to_dict()
-
-        # Update process names to include total number of days
-        df_timeline["Process"] = df_timeline["Process"].apply(
-            lambda x: f"{x} ({process_durations[x]} days)"
-        )
 
         # Create Gantt chart
         fig = px.timeline(
@@ -150,14 +142,6 @@ if st.button("Generate Timeline"):
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
 
-        # Add week and day labels to x-axis
-        fig.update_xaxes(
-            tickformat="Day %d",
-            ticklabelmode="period",
-            dtick="D1",
-            tick0=start_date
-        )
-
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
@@ -166,4 +150,3 @@ if st.button("Generate Timeline"):
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
-
