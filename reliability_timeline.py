@@ -9,16 +9,16 @@ durations = {
         ("Pretest", 3),
         ("VI", 1),
         ("250cyc", 7),
-        ("250cyc Readpoint", 3),
+        ("Readpoint", 3),
         ("500cyc", 7),
-        ("500cyc Readpoint", 3),
+        ("Readpoint", 3),
         ("750cyc", 7),
-        ("750cyc Readpoint", 3),
+        ("Readpoint", 3),
         ("1000cyc", 7),
-        ("1000cyc Readpoint", 3),
+        ("Readpoint", 3),
         ("VI", 1),
         ("1250cyc", 7),
-        ("1250cyc Readpoint", 3),
+        ("Readpoint", 3),
     ],
     "Random Vibration": [
         ("Pretest", 3),
@@ -32,13 +32,13 @@ durations = {
     "HAST 110C": [
         ("Pretest", 3),
         ("VI", 1),
-        ("Current Monitoring", 1),
+        ("CM", 1),
         ("HAST 96hrs", 3),
-        ("96hrs Readpoint", 3),
+        ("Readpoint", 3),
         ("VI", 1),
-        ("Current Monitoring", 1),
+        ("CM", 1),
         ("HAST 264hrs", 7),
-        ("264hrs Readpoint", 3),
+        ("Readpoint", 3),
     ],
     "Mechanical Shock": [
         ("Pretest", 3),
@@ -115,6 +115,7 @@ if st.button("Generate Timeline"):
         )
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
+        fig.update_layout(showlegend=False)  
 
         # Display the Gantt chart
         st.plotly_chart(fig, use_container_width=True)
