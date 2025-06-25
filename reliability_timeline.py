@@ -22,7 +22,7 @@ durations = {
     ],
     "Random Vibration": [
         ("Pretest", 3),
-        ("Precond", 10),
+        ("Precon", 10),
         ("Custom/K9 Approval", 15),
         ("Shipment", 2),
         ("RV", 5),
@@ -57,7 +57,7 @@ durations = {
     "Torsion": [
         ("Pretest", 3),
         ("Precon", 10),
-        ("Bend", 6),
+        ("Torsion", 6),
         ("Post Test", 3),
     ],
     "Vibration Temp Cycle": [
@@ -65,6 +65,29 @@ durations = {
         ("VTC", 7),
         ("Post Test", 3),
     ]
+}
+
+# Define custom colors for sub-processes
+custom_colors = {
+    "Pretest": "lightgreen",
+    "Readpoint": "lightgreen",
+    "Post Test": "lightgreen",
+    "VI": "lightblue",
+    "250cyc": "peachpuff",
+    "500cyc": "peachpuff",
+    "750cyc": "peachpuff",
+    "1000cyc": "peachpuff",
+    "1250cyc": "peachpuff",
+    "Precon": "peachpuff",
+    "RV": "peachpuff",
+    "Shock": "peachpuff",
+    "Bend": "peachpuff",
+    "HAST 96hrs": "peachpuff",
+    "HAST 264hrs": "peachpuff",
+    "VTC": "peachpuff",
+    "CM": "peachpuff",
+    "Custom/K9 Approval": "peachpuff",
+    "Shipment": "peachpuff"
 }
 
 # Streamlit app
@@ -96,9 +119,10 @@ if st.button("Generate Timeline"):
                     "Process": process,
                     "Sub-Process": sub_process,
                     "Start Date": process_start_date,
-                    "End Date": end_date
+                    "End Date": end_date,
+                    "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
                 })
-                process_start_date = end_date  # No gap between sub-processes
+                process_start_date = end_date + timedelta(days=1)  # 1-day gap between sub-processes
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
@@ -109,7 +133,7 @@ if st.button("Generate Timeline"):
             x_start="Start Date",
             x_end="End Date",
             y="Process",
-            color="Sub-Process",
+            color="Color",
             text="Sub-Process",
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
