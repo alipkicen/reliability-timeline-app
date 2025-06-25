@@ -147,12 +147,6 @@ if st.button("Generate Timeline"):
             dtick="D1",
             tick0=start_date
         )
-        fig.update_xaxes(
-            tickformatstops=[
-                dict(dtickrange=[None, 1000], value="%d-%b"),
-                dict(dtickrange=[1000, None], value="Week %U")
-            ]
-        )
         
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
