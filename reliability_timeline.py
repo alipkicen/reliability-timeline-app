@@ -21,7 +21,7 @@ durations = {
         ("1250cyc Readpoint", 3),
     ],
     "Random Vibration": [
-        ("Pretest", 3),
+        ("Pretest", 4),
         ("Precond", 10),
         ("Custom/K9 Approval", 15),
         ("Shipment", 2),
@@ -86,7 +86,6 @@ start_date = st.date_input("Select Start Date")
 if st.button("Generate Timeline"):
     if qawr_number and selected_processes and start_date:
         timeline = []
-
         for process in selected_processes:
             current_date = start_date
             for sub_process, days in durations[process]:
@@ -97,17 +96,15 @@ if st.button("Generate Timeline"):
                     "Start Date": current_date,
                     "End Date": end_date
                 })
-                current_date = end_date + timedelta(days=1)  # Assuming 1 day gap between sub-processes
+                current_date = end_date  # No extra day gap between sub-processes
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Display the timeline
-        st.write(f"### Timeline for QAWR Number: {qawr_number}")
-
-        # Create Gantt chart
-        fig = px.timeline(df_timeline, x_start="Start Date", x_end="End Date", y="Process", color="Sub-Process", title="Reliability Test Timeline")
+        # Display the timeline as a Gantt chart
+        fig = px.timeline(df_timeline, x_start="Start Date", x_end="End Date", y="Process", color="Sub-Process", title=f"Reliability Test Timeline for QAWR Number: {qawr_number}")
         fig.update_yaxes(categoryorder="total ascending")
         st.plotly_chart(fig)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
+
