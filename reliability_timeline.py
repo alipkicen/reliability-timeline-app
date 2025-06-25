@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")  # Ensures wide layout
 
 # Define the durations for each process and sub-process
 durations = {
@@ -88,7 +88,7 @@ custom_colors = {
     "HAST 264hrs": "peachpuff",
     "VTC": "peachpuff",
     "CM": "lightpurple",
-    "Custom/K9 Approval": "purple",
+    "Custom/K9 Approval": "lightgreen",
     "Shipment": "blue"
 }
 
@@ -115,16 +115,18 @@ if st.button("Generate Timeline"):
 
         for process in selected_processes:
             process_start_date = current_date
+            total_days = 0
             for sub_process, days in durations[process]:
                 end_date = process_start_date + timedelta(days=days)
                 timeline.append({
-                    "Process": process,
+                    "Process": f"{process} ({total_days + days} days)",
                     "Sub-Process": sub_process,
                     "Start Date": process_start_date,
                     "End Date": end_date,
                     "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
                 })
-                process_start_date = end_date  # No gap between sub-processes
+                process_start_date = end_date + timedelta(days=1)  # No gap between sub-processes
+                total_days += days
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
@@ -139,6 +141,21 @@ if st.button("Generate Timeline"):
             text="Sub-Process",
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
+        
+        # Add week and day labels to x-axis
+        fig.update_xaxes(
+            tickformat="%d-%b",
+            ticklabelmode="period",
+            dtick="D1",
+            tick0=start_date
+        )
+        fig.update_xaxes(
+            tickformatstops=[
+                dict(dtickrange=[None, 1000], value="%d-%b"),
+                dict(dtickrange=[1000, None], value="Week %U")
+            ]
+        )
+
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
