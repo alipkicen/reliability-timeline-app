@@ -148,18 +148,14 @@ if st.button("Generate Timeline"):
             xaxis_range=[df_timeline["Start Date"].min(), df_timeline["End Date"].max()]
         )
 
-        # Add secondary x-axis for day counts
+        # Add day counts on top x-axis
+        day_counts = [(start_date + timedelta(days=i)).strftime("Day %d") for i in range((df_timeline["End Date"].max() - start_date).days + 1)]
         fig.update_layout(
-            xaxis=dict(
-                title="Date",
-                side="bottom"
-            ),
             xaxis2=dict(
-                title="Day Count",
-                side="top",
-                overlaying="x",
-                tickvals=pd.date_range(start=df_timeline["Start Date"].min(), end=df_timeline["End Date"].max(), freq='D'),
-                ticktext=list(range(1, (df_timeline["End Date"].max() - df_timeline["Start Date"].min()).days + 2))
+                tickvals=pd.date_range(start=start_date, end=df_timeline["End Date"].max(), freq='D'),
+                ticktext=day_counts,
+                overlaying='x',
+                side='top'
             )
         )
 
