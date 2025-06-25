@@ -142,6 +142,7 @@ if st.button("Generate Timeline"):
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
+        fig.update_layout(xaxis_range=[df_timeline["Start Date"].min(), df_timeline["End Date"].max()])
 
         # Display the Gantt chart
         st.plotly_chart(fig, use_container_width=True)
