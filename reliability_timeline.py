@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 
-st.set_page_config(layout="wide")  # Ensures wide layout
-
 # Define the durations for each process and sub-process
 durations = {
     "Temp Cycle J/K": [
@@ -24,7 +22,7 @@ durations = {
     ],
     "Random Vibration": [
         ("Pretest", 3),
-        ("Precon", 10),
+        ("Precond", 10),
         ("Custom/K9 Approval", 15),
         ("Shipment", 2),
         ("RV", 5),
@@ -59,7 +57,7 @@ durations = {
     "Torsion": [
         ("Pretest", 3),
         ("Precon", 10),
-        ("Torsion", 6),
+        ("Bend", 6),
         ("Post Test", 3),
     ],
     "Vibration Temp Cycle": [
@@ -87,9 +85,9 @@ custom_colors = {
     "HAST 96hrs": "peachpuff",
     "HAST 264hrs": "peachpuff",
     "VTC": "peachpuff",
-    "CM": "lightpurple",
-    "Custom/K9 Approval": "lightgreen",
-    "Shipment": "blue"
+    "CM": "peachpuff",
+    "Custom/K9 Approval": "peachpuff",
+    "Shipment": "peachpuff"
 }
 
 # Streamlit app
@@ -107,46 +105,44 @@ selected_processes = st.multiselect(
 # Input start date
 start_date = st.date_input("Select Start Date")
 
-
 # Generate timeline
 if st.button("Generate Timeline"):
     if qawr_number and selected_processes and start_date:
         timeline = []
         current_date = start_date
-        
+
         for process in selected_processes:
             process_start_date = current_date
             for sub_process, days in durations[process]:
                 end_date = process_start_date + timedelta(days=days)
                 timeline.append({
-                     "Process": process,
-                       "Sub-Process": sub_process,
-                        "Start Date": process_start_date,
-                        "End Date": end_date,
-                        "Color": custom_colors.get(sub_process, "peachpuff") # Default color if not specified
-                         })
-                
-                process_start_date = end_date + timedelta(days=1) # 1-day gap between sub-processes
-                
-                # Convert timeline to DataFrame
-                df_timeline = pd.DataFrame(timeline)
-                
-                # Create Gantt chart
-                fig = px.timeline(
-                   df_timeline,
-                   x_start="Start Date",
-                   x_end="End Date",
-                   y="Process",
-                   color="Color",
-                   text="Sub-Process",
-                   title=f"Timeline for QAWR Number: {qawr_number}"
-                   )
-                
-                fig.update_yaxes(categoryorder="total ascending")
-                fig.update_traces(textposition='inside', insidetextanchor='middle')
-                fig.update_layout(showlegend=False)
-                
-                # Display the Gantt chart
-                st.plotly_chart(fig, use_container_width=True)
-                else:
-                st.error("Please enter QAWR number, select processes, and choose a start date.")
+                    "Process": process,
+                    "Sub-Process": sub_process,
+                    "Start Date": process_start_date,
+                    "End Date": end_date,
+                    "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
+                })
+                process_start_date = end_date + timedelta(days=1)  # 1-day gap between sub-processes
+
+        # Convert timeline to DataFrame
+        df_timeline = pd.DataFrame(timeline)
+
+        # Create Gantt chart
+        fig = px.timeline(
+            df_timeline,
+            x_start="Start Date",
+            x_end="End Date",
+            y="Process",
+            color="Color",
+            text="Sub-Process",
+            title=f"Timeline for QAWR Number: {qawr_number}"
+        )
+        fig.update_yaxes(categoryorder="total ascending")
+        fig.update_traces(textposition='inside', insidetextanchor='middle')
+        fig.update_layout(showlegend=False)
+
+        # Display the Gantt chart
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.error("Please enter QAWR number, select processes, and choose a start date.")
+
