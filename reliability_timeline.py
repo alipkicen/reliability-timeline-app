@@ -89,7 +89,7 @@ if st.button("Generate Timeline"):
         current_date = start_date
 
         for process in selected_processes:
-            process_start_date = start_date
+            process_start_date = current_date
             for sub_process, days in durations[process]:
                 end_date = process_start_date + timedelta(days=days)
                 timeline.append({
@@ -98,25 +98,23 @@ if st.button("Generate Timeline"):
                     "Start Date": process_start_date,
                     "End Date": end_date
                 })
-                process_start_date = end_date + timedelta(days=1)  # 1 day gap between sub-processes
+                process_start_date = end_date  # No gap between sub-processes
 
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
         # Create Gantt chart
         fig = px.timeline(
-            df_timeline, 
-            x_start="Start Date", 
-            x_end="End Date", 
-            y="Process", 
-            color="Sub-Process", 
-            title=f"Timeline for QAWR Number: {qawr_number}",
-            text="Sub-Process"
+            df_timeline,
+            x_start="Start Date",
+            x_end="End Date",
+            y="Process",
+            color="Sub-Process",
+            text="Sub-Process",
+            title=f"Timeline for QAWR Number: {qawr_number}"
         )
-
-        # Update layout to remove legend and adjust text position
-        fig.update_layout(showlegend=False)
-        fig.update_traces(textposition='inside', textfont_size=12)
+        fig.update_yaxes(categoryorder="total ascending")
+        fig.update_traces(textposition='inside', insidetextanchor='middle')
 
         # Display the Gantt chart
         st.plotly_chart(fig, use_container_width=True)
