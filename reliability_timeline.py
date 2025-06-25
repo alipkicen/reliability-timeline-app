@@ -115,7 +115,7 @@ if st.button("Generate Timeline"):
         )
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
-        fig.update_layout(showlegend=False)  
+        fig.update_layout(showlegend=False)
 
         # Display the Gantt chart
         st.plotly_chart(fig, use_container_width=True)
