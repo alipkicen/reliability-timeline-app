@@ -88,7 +88,7 @@ custom_colors = {
     "HAST 264hrs": "peachpuff",
     "VTC": "peachpuff",
     "CM": "lightpurple",
-    "Custom/K9 Approval": "purple",
+    "Custom/K9 Approval": "lightgreen",
     "Shipment": "blue"
 }
 
@@ -129,27 +129,33 @@ if st.button("Generate Timeline"):
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Add Day Count columns
-        df_timeline["Start Day"] = (df_timeline["Start Date"] - pd.to_datetime(start_date)).dt.days + 1
-        df_timeline["End Day"] = (df_timeline["End Date"] - pd.to_datetime(start_date)).dt.days + 1
+        # Calculate the total number of days for each process
+        process_durations = df_timeline.groupby("Process").apply(
+            lambda x: (x["End Date"].max() - x["Start Date"].min()).days + 1
+        ).to_dict()
 
-        # Create Gantt chart using day counts
+        # Update process names to include total number of days
+        df_timeline["Process"] = df_timeline["Process"].apply(
+            lambda x: f"{x} ({process_durations[x]} days)"
+        )
+
+        # Create Gantt chart
         fig = px.timeline(
             df_timeline,
-            x_start="Start Day",
-            x_end="End Day",
+            x_start="Start Date",
+            x_end="End Date",
             y="Process",
             color="Color",
             text="Sub-Process",
             title=f"Timeline for QAWR Number: {qawr_number}"
         )
 
-        # Update x-axis to show Day 1, Day 2, ...
+        # Add week and day labels to x-axis
         fig.update_xaxes(
-            tickmode="linear",
-            tick0=1,
-            dtick=1,
-            title_text="Day Count"
+            tickformat="Day %d",
+            ticklabelmode="period",
+            dtick="D1",
+            tick0=start_date
         )
 
         fig.update_yaxes(categoryorder="total ascending")
@@ -160,3 +166,4 @@ if st.button("Generate Timeline"):
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
+
