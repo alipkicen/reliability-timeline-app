@@ -111,7 +111,7 @@ start_date = st.date_input("Select Start Date")
 if st.button("Generate Timeline"):
     if qawr_number and selected_processes and start_date:
         timeline = []
-        current_date = start_date
+        current_date = start_date  # Update current_date to start_date
 
         for process in selected_processes:
             process_start_date = current_date
@@ -142,10 +142,8 @@ if st.button("Generate Timeline"):
         fig.update_yaxes(categoryorder="total ascending")
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
-        fig.update_layout(xaxis_range=[df_timeline["Start Date"].min(), df_timeline["End Date"].max()])
 
         # Display the Gantt chart
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.error("Please enter QAWR number, select processes, and choose a start date.")
-
