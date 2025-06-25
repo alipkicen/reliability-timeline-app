@@ -143,6 +143,19 @@ if st.button("Generate Timeline"):
         fig.update_traces(textposition='inside', insidetextanchor='middle')
         fig.update_layout(showlegend=False)
 
+        # Add day count annotation to the chart
+        fig.add_annotation(
+            go.layout.Annotation(
+                x=0.5,
+                y=1.05,
+                showarrow=False,
+                text="Day Count",
+                xref="paper",
+                yref="paper",
+                font=dict(size=14)
+            )
+        )
+
         # Set x-axis range to start exactly at the selected start date
         fig.update_layout(
             xaxis_range=[df_timeline["Start Date"].min(), df_timeline["End Date"].max()]
