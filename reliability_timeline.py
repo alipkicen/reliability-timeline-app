@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
 st.set_page_config(layout="wide")
@@ -129,34 +129,40 @@ if st.button("Generate Timeline"):
         # Convert timeline to DataFrame
         df_timeline = pd.DataFrame(timeline)
 
-        # Create Gantt chart
-        fig = px.timeline(
-            df_timeline,
-            x_start="Start Date",
-            x_end="End Date",
-            y="Process",
-            color="Color",
-            text="Sub-Process",
-            title=f"Timeline for QAWR Number: {qawr_number}"
-        )
-        fig.update_yaxes(categoryorder="total ascending")
-        fig.update_traces(textposition='inside', insidetextanchor='middle')
-        fig.update_layout(showlegend=False)
+        # Create Gantt chart using plotly.graph_objects
+        fig = go.Figure()
 
-        # Set x-axis range to start exactly at the selected start date
-        fig.update_layout(
-            xaxis_range=[df_timeline["Start Date"].min(), df_timeline["End Date"].max()]
-        )
+        for i, row in df_timeline.iterrows():
+            fig.add_trace(go.Bar(
+                x=[row["Start Date"], row["End Date"]],
+                y=[row["Process"]],
+                orientation='h',
+                marker=dict(color=row["Color"]),
+                text=row["Sub-Process"],
+                hoverinfo='text',
+                width=0.5
+            ))
 
-        # Add day counts on top x-axis
-        day_counts = [(start_date + timedelta(days=i)).strftime("Day %d") for i in range((df_timeline["End Date"].max() - start_date).days + 1)]
+        # Update layout to include secondary x-axis for day counts
         fig.update_layout(
+            title=f"Timeline for QAWR Number: {qawr_number}",
+            barmode='stack',
+            xaxis=dict(
+                tickformat="%Y-%m-%d",
+                title="Date"
+            ),
             xaxis2=dict(
-                tickvals=pd.date_range(start=start_date, end=df_timeline["End Date"].max(), freq='D'),
-                ticktext=day_counts,
                 overlaying='x',
-                side='top'
-            )
+                side='top',
+                tickvals=pd.date_range(start=start_date, end=df_timeline["End Date"].max(), freq='D'),
+                ticktext=[f"Day {i+1}" for i in range((df_timeline["End Date"].max() - start_date).days + 1)],
+                title="Day Count"
+            ),
+            yaxis=dict(
+                categoryorder="total ascending",
+                title="Process"
+            ),
+            showlegend=False
         )
 
         # Display the Gantt chart
