@@ -21,7 +21,7 @@ durations = {
         ("1250cyc Readpoint", 3),
     ],
     "Random Vibration": [
-        ("Pretest", 4),
+        ("Pretest", 3),
         ("Precond", 10),
         ("Custom/K9 Approval", 15),
         ("Shipment", 2),
