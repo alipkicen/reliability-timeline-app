@@ -123,9 +123,9 @@ if st.button("Generate Timeline"):
                        "Sub-Process": sub_process,
                         "Start Date": process_start_date,
                         "End Date": end_date,
-                        "Color": custom_colors.get(sub_process, "peachpuff")  # Default color if not specified
+                        "Color": custom_colors.get(sub_process, "peachpuff") # Default color if not specified
                          })
-                         process_start_date = end_date + timedelta(days=1)  # 1-day gap between sub-processes
+                         process_start_date = end_date + timedelta(days=1) # 1-day gap between sub-processes
 
      # Convert timeline to DataFrame
      df_timeline = pd.DataFrame(timeline)
