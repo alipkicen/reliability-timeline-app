@@ -25,6 +25,6 @@ Then open [http://localhost:8501](http://localhost:8501) to view it in your brow
   
 ## 📂 Project Structure
 
-* `app.py` – Main Streamlit app
+* `reliability_timeline.py` – Main Streamlit app
 * `requirements.txt` – Dependencies (Streamlit, Pandas, Plotly)
 * `README.md` – Project documentation
